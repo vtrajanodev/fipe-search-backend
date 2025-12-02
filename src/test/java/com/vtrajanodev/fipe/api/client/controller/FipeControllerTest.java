@@ -29,7 +29,10 @@ class FipeControllerTest {
 
   @Test
   void testListBrands() {
-    List<FipeItemResponse> mockBrands = List.of(new FipeItemResponse("1", "Ford"), new FipeItemResponse("2", "Chevrolet"));
+    List<FipeItemResponse> mockBrands = List.of(
+            new FipeItemResponse("1", "Ford"),
+            new FipeItemResponse("2", "Chevrolet")
+    );
 
     when(service.listBrands("cars")).thenReturn(mockBrands);
 
@@ -47,7 +50,10 @@ class FipeControllerTest {
 
   @Test
   void testListModels() {
-    List<FipeItemResponse> mockModels = List.of(new FipeItemResponse("10", "Fiesta"), new FipeItemResponse("20", "Focus"));
+    List<FipeItemResponse> mockModels = List.of(
+            new FipeItemResponse("10", "Fiesta"),
+            new FipeItemResponse("20", "Focus")
+    );
 
     when(service.listModels("cars", "1")).thenReturn(mockModels);
 
@@ -65,11 +71,23 @@ class FipeControllerTest {
 
   @Test
   void testGetPrice() {
-    FipePriceResponse mockPrice = new FipePriceResponse("Ford", "001267-0", "Gasolina", "G", "Fiesta", 2019, "45000", "setembro de 2024", "cars");
+    FipePriceResponse mockPrice = new FipePriceResponse(
+            "Ford",
+            "001267-0",
+            "Gasolina",
+            "G",
+            "Fiesta",
+            2019,
+            "45000",
+            "setembro de 2024",
+            "cars"
+    );
 
-    when(service.getPriceByYear("cars", "1", "10", "2019")).thenReturn(mockPrice);
+    when(service.getPriceByYear("cars", "1", "10", "2019"))
+            .thenReturn(mockPrice);
 
-    ResponseEntity<FipePriceResponse> response = controller.getPrice("cars", "1", "10", "2019");
+    ResponseEntity<FipePriceResponse> response =
+            controller.getPrice("cars", "1", "10", "2019");
 
     assertNotNull(response);
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -82,16 +100,36 @@ class FipeControllerTest {
     assertEquals(2019, body.getModelYear());
     assertEquals("45000", body.getPrice());
 
-    verify(service, times(1)).getPriceByYear("cars", "1", "10", "2019");
+    verify(service, times(1))
+            .getPriceByYear("cars", "1", "10", "2019");
   }
 
   @Test
   void testGetPriceHistory() {
-    List<VehicleFipeInformationResponse> mockHistory = List.of(new VehicleFipeInformationResponse("2018", "40000", null, null, null, null), new VehicleFipeInformationResponse("2019", "45000", null, null, null, null));
+    List<VehicleFipeInformationResponse> mockHistory = List.of(
+            new VehicleFipeInformationResponse(
+                    "2018",
+                    "40000",
+                    null,
+                    null,
+                    null,
+                    null
+            ),
+            new VehicleFipeInformationResponse(
+                    "2019",
+                    "45000",
+                    null,
+                    null,
+                    null,
+                    null
+            )
+    );
 
-    when(service.getPriceHistoryDetailed("cars", "1", "10")).thenReturn(mockHistory);
+    when(service.getPriceHistoryDetailed("cars", "1", "10"))
+            .thenReturn(mockHistory);
 
-    ResponseEntity<List<VehicleFipeInformationResponse>> response = controller.getPriceHistory("cars", "1", "10");
+    ResponseEntity<List<VehicleFipeInformationResponse>> response =
+            controller.getPriceHistory("cars", "1", "10");
 
     assertNotNull(response);
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -105,7 +143,8 @@ class FipeControllerTest {
     assertEquals("2019", response.getBody().get(1).getYear());
     assertEquals("45000", response.getBody().get(1).getPrice());
 
-    verify(service, times(1)).getPriceHistoryDetailed("cars", "1", "10");
+    verify(service, times(1))
+            .getPriceHistoryDetailed("cars", "1", "10");
   }
 }
 
