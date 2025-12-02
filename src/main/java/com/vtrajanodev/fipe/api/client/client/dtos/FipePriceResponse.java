@@ -2,18 +2,21 @@ package com.vtrajanodev.fipe.api.client.client.dtos;
 
 import lombok.*;
 
+import java.util.List;
+
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class FipePriceResponse {
-  private String Valor;
-  private String Marca;
-  private String Modelo;
-  private Integer AnoModelo;
-  private String Combustivel;
-  private String CodigoFipe;
-  private String MesReferencia;
-  private String TipoVeiculo;
-  private String SiglaCombustivel;
+  private String brand;
+  private String codeFipe;
+  private String fuel;
+  private String fuelAcronym;
+  private String model;
+  private Integer modelYear;
+  private String price;
+  private List<VehiclePriceHistory> priceHistory;
+  private String referenceMonth;
+  private String vehicleType;
 }

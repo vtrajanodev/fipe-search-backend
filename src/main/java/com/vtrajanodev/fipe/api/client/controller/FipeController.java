@@ -1,9 +1,6 @@
 package com.vtrajanodev.fipe.api.client.controller;
 
-import com.vtrajanodev.fipe.api.client.client.dtos.FipeBrandResponse;
-import com.vtrajanodev.fipe.api.client.client.dtos.FipeModelResponse;
-import com.vtrajanodev.fipe.api.client.client.dtos.FipePriceResponse;
-import com.vtrajanodev.fipe.api.client.client.dtos.FipeYearResponse;
+import com.vtrajanodev.fipe.api.client.client.dtos.*;
 import com.vtrajanodev.fipe.api.client.services.FipeIntegrationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,12 +38,20 @@ public class FipeController {
     return ResponseEntity.ok(service.listYears(brandId, modelId));
   }
 
-  @GetMapping("/brands/{brandId}/models/{modelId}/years/{yearCode}")
+  @GetMapping("/brands/{brandId}/models/{modelId}/years/{yearId}")
   public ResponseEntity<FipePriceResponse> getPrice(
           @PathVariable String brandId,
           @PathVariable String modelId,
-          @PathVariable String yearCode
+          @PathVariable String yearId
   ) {
-    return ResponseEntity.ok(service.getPrice(brandId, modelId, yearCode));
+    return ResponseEntity.ok(service.getPriceByYear(brandId, modelId, yearId));
+  }
+
+  @GetMapping("/brands/{brandId}/models/{modelId}/history")
+  public ResponseEntity<List<VehiclePriceHistory>> getPriceHistory(
+          @PathVariable String brandId,
+          @PathVariable String modelId) {
+
+    return ResponseEntity.ok(service.getPriceHistory(brandId, modelId));
   }
 }

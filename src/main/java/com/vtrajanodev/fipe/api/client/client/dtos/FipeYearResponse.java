@@ -7,6 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FipeYearResponse {
-  private String code; // ex: "2013-1"
-  private String name; // ex: "2013 Gasolina"
+  private String code;
+  private String name;
 }

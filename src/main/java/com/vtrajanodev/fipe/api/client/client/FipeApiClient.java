@@ -29,10 +29,10 @@ public interface FipeApiClient {
           @PathVariable("modelId") String modelId
   );
 
-  @GetMapping("/cars/brands/{brandId}/models/{modelId}/years/{yearCode}")
+  @GetMapping("/cars/brands/{brandId}/models/{modelId}/years/{yearId}")
   FipePriceResponse getPriceByYear(
           @PathVariable("brandId") String brandId,
           @PathVariable("modelId") String modelId,
-          @PathVariable("yearCode") String yearCode
+          @PathVariable("yearId") String yearCode
   );
 }
