@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/fipe/cars")
+@RequestMapping("/fipe")
 public class FipeController {
 
   private final FipeIntegrationService service;
@@ -20,38 +20,40 @@ public class FipeController {
     this.service = service;
   }
 
-  @GetMapping("/brands")
-  public ResponseEntity<List<FipeBrandResponse>> listBrands() {
-    return ResponseEntity.ok(service.listBrands());
+  @GetMapping("/{vehicleType}/brands")
+  public ResponseEntity<List<FipeItemResponse>> listBrands(@PathVariable String vehicleType) {
+    return ResponseEntity.ok(service.listBrands(vehicleType));
   }
 
-  @GetMapping("/brands/{brandId}/models")
-  public ResponseEntity<List<FipeModelResponse>> listModels(@PathVariable String brandId) {
-    return ResponseEntity.ok(service.listModels(brandId));
+  @GetMapping("/{vehicleType}/brands/{brandId}/models")
+  public ResponseEntity<List<FipeItemResponse>> listModels(
+          @PathVariable String vehicleType,
+          @PathVariable String brandId) {
+    return ResponseEntity.ok(service.listModels(vehicleType, brandId));
   }
 
-  @GetMapping("/brands/{brandId}/models/{modelId}/years")
-  public ResponseEntity<List<FipeYearResponse>> listYears(
-          @PathVariable String brandId,
-          @PathVariable String modelId
-  ) {
-    return ResponseEntity.ok(service.listYears(brandId, modelId));
-  }
-
-  @GetMapping("/brands/{brandId}/models/{modelId}/years/{yearId}")
-  public ResponseEntity<FipePriceResponse> getPrice(
-          @PathVariable String brandId,
-          @PathVariable String modelId,
-          @PathVariable String yearId
-  ) {
-    return ResponseEntity.ok(service.getPriceByYear(brandId, modelId, yearId));
-  }
-
-  @GetMapping("/brands/{brandId}/models/{modelId}/history")
-  public ResponseEntity<List<VehiclePriceHistory>> getPriceHistory(
+  @GetMapping("/{vehicleType}/brands/{brandId}/models/{modelId}/years")
+  public ResponseEntity<List<FipeItemResponse>> listYears(
+          @PathVariable String vehicleType,
           @PathVariable String brandId,
           @PathVariable String modelId) {
+    return ResponseEntity.ok(service.listYears(vehicleType, brandId, modelId));
+  }
 
-    return ResponseEntity.ok(service.getPriceHistory(brandId, modelId));
+  @GetMapping("/{vehicleType}/brands/{brandId}/models/{modelId}/years/{yearId}")
+  public ResponseEntity<FipePriceResponse> getPrice(
+          @PathVariable String vehicleType,
+          @PathVariable String brandId,
+          @PathVariable String modelId,
+          @PathVariable String yearId) {
+    return ResponseEntity.ok(service.getPriceByYear(vehicleType, brandId, modelId, yearId));
+  }
+
+  @GetMapping("/{vehicleType}/brands/{brandId}/models/{modelId}/history")
+  public ResponseEntity<List<VehicleFipeInformationResponse>> getPriceHistory(
+          @PathVariable String vehicleType,
+          @PathVariable String brandId,
+          @PathVariable String modelId) {
+    return ResponseEntity.ok(service.getPriceHistoryDetailed(vehicleType, brandId, modelId));
   }
 }

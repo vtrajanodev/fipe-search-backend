@@ -11,9 +11,11 @@ import java.math.BigDecimal;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class VehiclePriceHistory {
+public class VehicleFipeInformationResponse {
   private String year;
   private String price;
   private BigDecimal diff;
   private BigDecimal diffPercentage;
+  private String previousYear;
+  private String previousPrice;
 }

@@ -16,7 +16,6 @@ public class FipePriceResponse {
   private String model;
   private Integer modelYear;
   private String price;
-  private List<VehiclePriceHistory> priceHistory;
   private String referenceMonth;
   private String vehicleType;
 }
