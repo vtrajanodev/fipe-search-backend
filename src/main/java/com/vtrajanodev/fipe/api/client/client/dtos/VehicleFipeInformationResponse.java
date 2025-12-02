@@ -14,8 +14,8 @@ import java.math.BigDecimal;
 public class VehicleFipeInformationResponse {
   private String year;
   private String price;
-  private BigDecimal diff;
-  private BigDecimal diffPercentage;
+  private String diff;
+  private String diffPercentage;
   private String previousYear;
   private String previousPrice;
 }
