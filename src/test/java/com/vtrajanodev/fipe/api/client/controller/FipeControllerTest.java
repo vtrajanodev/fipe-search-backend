@@ -12,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,7 +41,7 @@ class FipeControllerTest {
     assertNotNull(response);
     assertEquals(HttpStatus.OK, response.getStatusCode());
 
-    assertNotNull(response.getBody()); // <-- remove o warning
+    assertNotNull(response.getBody());
     assertEquals(2, response.getBody().size());
     assertEquals("Ford", response.getBody().get(0).getName());
 
@@ -73,15 +72,15 @@ class FipeControllerTest {
   @Test
   void testGetPrice() {
     FipePriceResponse mockPrice = new FipePriceResponse(
-            "Ford",        // brand
-            "001267-0",    // codeFipe
-            "Gasolina",    // fuel
-            "G",           // fuelAcronym
-            "Fiesta",      // model
-            2019,          // modelYear (Integer)
-            "45000",       // price (String!)
-            "setembro de 2024", // referenceMonth
-            "cars"         // vehicleType
+            "Ford",
+            "001267-0",
+            "Gasolina",
+            "G",
+            "Fiesta",
+            2019,
+            "45000",
+            "setembro de 2024",
+            "cars"
     );
 
     when(service.getPriceByYear("cars", "1", "10", "2019"))
@@ -109,12 +108,12 @@ class FipeControllerTest {
   void testGetPriceHistory() {
     List<VehicleFipeInformationResponse> mockHistory = List.of(
             new VehicleFipeInformationResponse(
-                    "2018",     // year
-                    "40000",    // price
-                    null,       // diff
-                    null,       // diffPercentage
-                    null,       // previousYear
-                    null        // previousPrice
+                    "2018",
+                    "40000",
+                    null,
+                    null,
+                    null,
+                    null
             ),
             new VehicleFipeInformationResponse(
                     "2019",
