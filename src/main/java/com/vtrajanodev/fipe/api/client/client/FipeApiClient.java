@@ -10,10 +10,9 @@ import java.util.List;
 
 @FeignClient(
         name = "fipeClient",
-        url = "https://parallelum.com.br/fipe/api/v2"
+        url = "${fipe.api.url}"
 )
 public interface FipeApiClient {
-
   @GetMapping("/{vehicleType}/brands")
   List<FipeItemResponse> getBrands(@PathVariable("vehicleType") String vehicleType);
 

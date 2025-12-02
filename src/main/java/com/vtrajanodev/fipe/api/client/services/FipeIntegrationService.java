@@ -4,6 +4,7 @@ import com.vtrajanodev.fipe.api.client.client.FipeApiClient;
 import com.vtrajanodev.fipe.api.client.client.dtos.FipeItemResponse;
 import com.vtrajanodev.fipe.api.client.client.dtos.FipePriceResponse;
 import com.vtrajanodev.fipe.api.client.client.dtos.VehicleFipeInformationResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -12,14 +13,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
 public class FipeIntegrationService {
 
   private final FipeApiClient client;
-
-  public FipeIntegrationService(FipeApiClient client) {
-    this.client = client;
-  }
 
   public List<FipeItemResponse> listBrands(String vehicleType) {
     return client.getBrands(vehicleType);
@@ -27,10 +25,6 @@ public class FipeIntegrationService {
 
   public List<FipeItemResponse> listModels(String vehicleType, String brandId) {
     return client.getModelsByBrand(vehicleType, brandId);
-  }
-
-  public List<FipeItemResponse> listYears(String vehicleType, String brandId, String modelId) {
-    return client.getYearsByModel(vehicleType, brandId, modelId);
   }
 
   public FipePriceResponse getPriceByYear(String vehicleType, String brandId, String modelId, String yearId) {
@@ -88,8 +82,9 @@ public class FipeIntegrationService {
   private BigDecimal parsePrice(String price) {
     if (price == null || price.isBlank())
       return BigDecimal.ZERO;
-    String clean = price.replace("R$", "").replace(".", "").replace(",", ".").trim();
+
     try {
+      String clean = price.replace("R$", "").replace(".", "").replace(",", ".").trim();
       return new BigDecimal(clean);
     } catch (NumberFormatException e) {
       return BigDecimal.ZERO;
