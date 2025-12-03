@@ -16,9 +16,12 @@ public class WebConfig {
         registry.addMapping("/**")
                 .allowedOrigins(
                         "http://localhost:4200",
-                        "https://fipe-search-frontend.vercel.app"
+                        "https://fipe-search-frontend.vercel.app",
+                        "http://fipe-search-backend-production.up.railway.app",
+                        "https://fipe-search-backend-production.up.railway.app"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
                 .allowCredentials(true);
       }
     };
