@@ -1,0 +1,34 @@
+package com.vtrajanodev.fipe.api.client.config;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.servers.Server;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
+
+@Configuration
+public class OpenApiConfig {
+
+  @Value("${server.servlet.context-path:}")
+  private String contextPath;
+
+  @Bean
+  public OpenAPI customOpenAPI() {
+    return new OpenAPI()
+            .info(new Info()
+                    .title("FIPE API")
+                    .version("1.0")
+                    .description("API para consulta de dados da tabela FIPE"))
+            .servers(List.of(
+                    new Server()
+                            .url("https://fipe-search-backend-production.up.railway.app")
+                            .description("Produção"),
+                    new Server()
+                            .url("http://localhost:8080")
+                            .description("Desenvolvimento")
+            ));
+  }
+}
