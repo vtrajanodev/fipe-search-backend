@@ -5,30 +5,32 @@ import com.vtrajanodev.fipe.api.client.client.dtos.FipePriceResponse;
 import com.vtrajanodev.fipe.api.client.client.dtos.VehicleFipeInformationResponse;
 import com.vtrajanodev.fipe.api.client.services.FipeIntegrationService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(FipeController.class)
 class FipeControllerTest {
 
-  @Mock
+  @Autowired
+  private MockMvc mockMvc;
+
+  @MockitoBean
   private FipeIntegrationService service;
 
-  @InjectMocks
-  private FipeController controller;
-
   @Test
-  void testListBrands() {
+  void testListBrands() throws Exception {
     List<FipeItemResponse> mockBrands = List.of(
             new FipeItemResponse("1", "Ford"),
             new FipeItemResponse("2", "Chevrolet")
@@ -36,20 +38,20 @@ class FipeControllerTest {
 
     when(service.listBrands("cars")).thenReturn(mockBrands);
 
-    ResponseEntity<List<FipeItemResponse>> response = controller.listBrands("cars");
-
-    assertNotNull(response);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-
-    assertNotNull(response.getBody());
-    assertEquals(2, response.getBody().size());
-    assertEquals("Ford", response.getBody().get(0).getName());
+    mockMvc.perform(get("/fipe/cars/brands")
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(2)))
+            .andExpect(jsonPath("$[0].code").value("1"))
+            .andExpect(jsonPath("$[0].name").value("Ford"))
+            .andExpect(jsonPath("$[1].code").value("2"))
+            .andExpect(jsonPath("$[1].name").value("Chevrolet"));
 
     verify(service, times(1)).listBrands("cars");
   }
 
   @Test
-  void testListModels() {
+  void testListModels() throws Exception {
     List<FipeItemResponse> mockModels = List.of(
             new FipeItemResponse("10", "Fiesta"),
             new FipeItemResponse("20", "Focus")
@@ -57,95 +59,79 @@ class FipeControllerTest {
 
     when(service.listModels("cars", "1")).thenReturn(mockModels);
 
-    ResponseEntity<List<FipeItemResponse>> response = controller.listModels("cars", "1");
-
-    assertNotNull(response);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-
-    assertNotNull(response.getBody());
-    assertEquals(2, response.getBody().size());
-    assertEquals("Fiesta", response.getBody().get(0).getName());
+    mockMvc.perform(get("/fipe/cars/brands/1/models")
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(2)))
+            .andExpect(jsonPath("$[0].code").value("10"))
+            .andExpect(jsonPath("$[0].name").value("Fiesta"))
+            .andExpect(jsonPath("$[1].code").value("20"))
+            .andExpect(jsonPath("$[1].name").value("Focus"));
 
     verify(service, times(1)).listModels("cars", "1");
   }
 
   @Test
-  void testGetPrice() {
-    FipePriceResponse mockPrice = new FipePriceResponse(
-            "Ford",
-            "001267-0",
-            "Gasolina",
-            "G",
-            "Fiesta",
-            2019,
-            "45000",
-            "setembro de 2024",
-            "cars"
-    );
+  void testGetPrice() throws Exception {
+    FipePriceResponse mockResponse = FipePriceResponse.builder()
+            .brand("Ford")
+            .codeFipe("001234")
+            .fuel("Gasolina")
+            .fuelAcronym("G")
+            .model("Fiesta")
+            .modelYear(2019)
+            .price("45000")
+            .referenceMonth("novembro/2024")
+            .vehicleType("cars")
+            .build();
 
     when(service.getPriceByYear("cars", "1", "10", "2019"))
-            .thenReturn(mockPrice);
+            .thenReturn(mockResponse);
 
-    ResponseEntity<FipePriceResponse> response =
-            controller.getPrice("cars", "1", "10", "2019");
-
-    assertNotNull(response);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-
-    assertNotNull(response.getBody());
-    FipePriceResponse body = response.getBody();
-
-    assertEquals("Ford", body.getBrand());
-    assertEquals("Fiesta", body.getModel());
-    assertEquals(2019, body.getModelYear());
-    assertEquals("45000", body.getPrice());
+    mockMvc.perform(get("/fipe/cars/brands/1/models/10/years/2019")
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.modelYear").value(2019))
+            .andExpect(jsonPath("$.price").value("45000"))
+            .andExpect(jsonPath("$.model").value("Fiesta"));
 
     verify(service, times(1))
             .getPriceByYear("cars", "1", "10", "2019");
   }
-
   @Test
-  void testGetPriceHistory() {
+  void testGetPriceHistory() throws Exception {
     List<VehicleFipeInformationResponse> mockHistory = List.of(
-            new VehicleFipeInformationResponse(
-                    "2018",
-                    "40000",
-                    null,
-                    null,
-                    null,
-                    null
-            ),
-            new VehicleFipeInformationResponse(
-                    "2019",
-                    "45000",
-                    null,
-                    null,
-                    null,
-                    null
-            )
+            VehicleFipeInformationResponse.builder()
+                    .year("2018")
+                    .price("40000")
+                    .diff(null)
+                    .diffPercentage(null)
+                    .previousYear(null)
+                    .previousPrice(null)
+                    .build(),
+            VehicleFipeInformationResponse.builder()
+                    .year("2019")
+                    .price("45000")
+                    .diff(null)
+                    .diffPercentage(null)
+                    .previousYear(null)
+                    .previousPrice(null)
+                    .build()
     );
 
     when(service.getPriceHistoryDetailed("cars", "1", "10"))
             .thenReturn(mockHistory);
 
-    ResponseEntity<List<VehicleFipeInformationResponse>> response =
-            controller.getPriceHistory("cars", "1", "10");
-
-    assertNotNull(response);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-
-    assertNotNull(response.getBody());
-    assertEquals(2, response.getBody().size());
-
-    assertEquals("2018", response.getBody().get(0).getYear());
-    assertEquals("40000", response.getBody().get(0).getPrice());
-
-    assertEquals("2019", response.getBody().get(1).getYear());
-    assertEquals("45000", response.getBody().get(1).getPrice());
+    mockMvc.perform(get("/fipe/cars/brands/1/models/10/history")
+                    .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(2)))
+            .andExpect(jsonPath("$[0].year").value("2018"))
+            .andExpect(jsonPath("$[0].price").value("40000"))
+            .andExpect(jsonPath("$[1].year").value("2019"))
+            .andExpect(jsonPath("$[1].price").value("45000"));
 
     verify(service, times(1))
             .getPriceHistoryDetailed("cars", "1", "10");
   }
 }
-
-
