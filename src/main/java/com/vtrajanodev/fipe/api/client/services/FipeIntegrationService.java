@@ -97,7 +97,6 @@ public class FipeIntegrationService {
     if (value == null)
       return null;
     NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
-    // Substitui espaço fino (non-breaking space) por espaço normal
     return nf.format(value).replace("\u00A0", " ");
   }
 
