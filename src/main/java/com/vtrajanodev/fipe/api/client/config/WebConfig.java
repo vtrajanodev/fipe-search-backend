@@ -14,12 +14,7 @@ public class WebConfig {
       @Override
       public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(
-                        "http://localhost:4200",
-                        "https://fipe-search-frontend.vercel.app",
-                        "http://fipe-search-backend-production.up.railway.app",
-                        "https://fipe-search-backend-production.up.railway.app"
-                )
+                .allowedOriginPatterns("*") // Permite qualquer origem
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
