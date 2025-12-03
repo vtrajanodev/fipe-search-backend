@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 @RequiredArgsConstructor
 @Service
@@ -92,17 +94,19 @@ public class FipeIntegrationService {
   }
 
   private String formatCurrency(BigDecimal value) {
-    if (value == null) {
+    if (value == null)
       return null;
-    }
-    return String.format("R$ %,.2f", value);
+    NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+    // Substitui espaço fino (non-breaking space) por espaço normal
+    return nf.format(value).replace("\u00A0", " ");
   }
 
   private String formatPercentage(BigDecimal percentage) {
-    if (percentage == null) {
+    if (percentage == null)
       return null;
-    }
-    return String.format("%.2f%%", percentage);
+    NumberFormat nf = NumberFormat.getNumberInstance(new Locale("pt", "BR"));
+    nf.setMinimumFractionDigits(2);
+    nf.setMaximumFractionDigits(2);
+    return nf.format(percentage) + "%";
   }
 }
-
